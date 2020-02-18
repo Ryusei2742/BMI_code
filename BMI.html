@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="utf-8">
+
+<title>Final</title>
+</head>
+
+<body >
+<h1>BMIの計算</h1>
+
+
+<button id = "add_data">データ入力</button>
+<button id = "calc_ave">平均値の表示</button>
+<button id = "show_graph">グラフの表示</button>
+<br><br>
+<table id="data_table" border="1">
+	<tr class ="head_tr">
+		<td width="100">体重</td>
+		<td width="50">身長</td>
+		<td width="50">BMI</td>
+	</tr>
+</table>
+<br><br>
+
+<div id = "chart_div" style = "width : 800px; height : 400px;"></div>
+<style>
+.head_tr{
+	color:white;
+	background: navy;
+}
+
+.f_bmi{
+	color : white;
+	background-color : #00ff00;
+}
+.s_bmi{
+	color : white;
+	background-color : #0000ff;
+}
+
+.ave{
+	color : white;
+	background-color : #ff0000;
+}
+</style>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+var weight_a = [];
+var height_a = [];
+var bmi_a = [];
+
+
+var b2 = document.getElementById("add_data");
+b2.addEventListener('click', function() {
+	 w_a = prompt('体重(kg)を入力してください');
+	 h_a = prompt('身長(m)を入力してください');
+	 b_a = w_a / (h_a * h_a);
+	 weight_a.push(w_a);
+	 height_a.push(h_a);
+	 bmi_a.push(b_a);
+
+	var dtable = document.getElementById("data_table");
+	var tr1 = document.createElement('tr');
+	var td_1 = document.createElement('td');
+	var td_2 = document.createElement('td');
+	var td_3 = document.createElement('td');
+
+
+	tr1.appendChild(td_1);
+	var text_1 = document.createTextNode(weight_a[weight_a.length - 1]);
+	td_1.appendChild(text_1);
+
+	tr1.appendChild(td_2);
+	var text_2 = document.createTextNode(height_a[height_a.length - 1]);
+	td_2.appendChild(text_2);
+
+	tr1.appendChild(td_3);
+	var text_3 = document.createTextNode(bmi_a[bmi_a.length - 1]);
+	td_3.appendChild(text_3);
+
+	dtable.appendChild(tr1);
+
+ 	var bmi_fs = Number(bmi_a[bmi_a.length - 1]);
+	if (bmi_fs >= 25) {
+		td_3.className = "f_bmi";
+	} else if (bmi_fs < 18.5) {
+		td_3.className = "s_bmi";
+	} else {
+		td_3.className = "m";
+	};
+});
+
+var b3 = document.getElementById('calc_ave');
+b3.addEventListener('click', function() {
+
+	var weight_ave = 0;
+	var wei_num = 0;
+	var height_ave = 0;
+	var hei_num = 0;
+	var bmi_ave = 0;
+	var bmi_num = 0;
+	var dtable = document.getElementById("data_table");
+	var tr1 = document.createElement('tr');
+	var td_1 = document.createElement('td');
+	var td_2 = document.createElement('td');
+	var td_3 = document.createElement('td');
+
+
+	for(i = 0; i < weight_a.length; i++) {
+		wei_num = Number(weight_a[i]);
+		weight_ave += wei_num;
+	};
+	 weight_ave = weight_ave / weight_a.length;
+
+	 for(i = 0; i < height_a.length; i++) {
+		 hei_num = Number(height_a[i]);
+		 height_ave += hei_num;
+	 };
+	 height_ave = height_ave / height_a.length;
+
+	 for(i = 0; i < bmi_a.length; i++) {
+		 bmi_num = Number(bmi_a[i]);
+		 bmi_ave += bmi_num;
+	 };
+	 bmi_ave = bmi_ave / bmi_a.length;
+
+
+	tr1.appendChild(td_1);
+	var text_4 = document.createTextNode(weight_ave);
+	td_1.appendChild(text_4);
+
+	tr1.appendChild(td_2);
+	var text_5 = document.createTextNode(height_ave);
+	td_2.appendChild(text_5);
+
+	tr1.appendChild(td_3);
+	var text_6 = document.createTextNode(bmi_ave);
+	td_3.appendChild(text_6);
+
+
+	dtable.appendChild(tr1);
+
+	tr1.className = "ave";
+});
+
+// グラフの表示
+
+document.getElementById("show_graph").addEventListener('click', function() {
+drawChart();
+});
+
+ function drawChart() {
+	var data1 = new google.visualization.DataTable();
+	data1.addColumn('number', '体重');
+	data1.addColumn('number', '身長');
+	for (i = 0; i < weight_a.length; i++) {
+		var w_p = parseInt(weight_a[i]);
+		var h_p = parseInt(height_a[i]);
+		data1.addRow([w_p, h_p]);
+	};
+
+	var options1 = {title: '体重と身長のグラフ',
+									hAxis:{title: '体重', minValue: 0, maxValue: 200},
+									vAxis:{title: '身長', minValue: 0, maxValue: 3},
+									legend: 'none'};
+  var chart1 = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+	chart1.draw(data1, options1);
+};
+
+
+</script>
+
+</body>
+
+</html>
